@@ -1,0 +1,25 @@
+// this trick is used to manage nested git repositories properly,
+// see https://github.com/microsoft/vscode/issues/37947 to track changes on this.
+{
+  "folders": [
+    {
+      "name": "Rocket",
+      "path": "rocket"
+    },
+    {
+      "name": "Playground",
+      "path": "rocket_playground"
+    }
+  ],
+  "settings": {
+    "cSpell.words": [
+      "annotable",
+      "appender",
+      "appenders",
+      "bindir",
+      "klass",
+      "ractor",
+      "SIGINT",
+    ]
+  }
+}

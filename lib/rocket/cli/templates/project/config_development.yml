@@ -1,0 +1,2 @@
+# Add your vars here, you can make erb binding e.g.:
+# example: <%= ENV.fetch("SOME_VAR", "some default value") %>
