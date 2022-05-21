@@ -13,11 +13,7 @@ module Rocket
     end
 
     def adapter(name)
-      not_found_error = -> { raise AdapterNotFoundError, "The adapter named \"#{name}\" does not exist" }
-
-      Rocket.config.adapters.find(not_found_error) do |adapter|
-        adapter.name == name
-      end
+      Rocket.config.adapter(name)
     end
 
     def logger

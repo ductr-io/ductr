@@ -2,7 +2,7 @@
 
 module Rocket
   class KibaJob < Job
-    annotable :source, :lookup, :destination, :transform
+    annotable :source, :transform, :lookup, :destination
 
     def initialize
       super

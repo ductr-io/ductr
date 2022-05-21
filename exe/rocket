@@ -17,6 +17,5 @@ loop do
   Dir.chdir("..")
 end
 
-# Rocket.config.root = CURRENT_DIR
 Dir.chdir(CURRENT_DIR)
 Rocket::CLI::Default.start

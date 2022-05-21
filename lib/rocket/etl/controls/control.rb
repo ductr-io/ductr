@@ -22,9 +22,9 @@ module Rocket
 
       private
 
-      def call_method(*params)
+      def call_method(*params, &)
         SemanticLogger.tagged(method: @method_name) do
-          @context.send(@method_name, *params)
+          @context.send(@method_name, *params, &)
         end
       end
     end
