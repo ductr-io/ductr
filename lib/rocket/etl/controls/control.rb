@@ -8,8 +8,8 @@ module Rocket
       end
 
       def initialize(context, method_name, adapter_name = nil, **options)
-        @method_name = method_name
         @context = context
+        @method_name = method_name
         @adapter_name = adapter_name
         @options = options
       end
@@ -26,6 +26,9 @@ module Rocket
         SemanticLogger.tagged(method: @method_name) do
           @context.send(@method_name, *params, &)
         end
+      rescue StandardError
+        adapter&.close!
+        raise # re-raises the exact same error
       end
     end
   end

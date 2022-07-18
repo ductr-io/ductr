@@ -22,23 +22,39 @@ module Rocket
     # @return [Symbol] the adapter instance name
     attr_reader :name
 
+    # @return [Hash<Symbol, Object>] the adapter configuration hash
+    attr_reader :config
+
     #
     # Creates a new adapter instance.
     #
-    # @param name [Symbol] The adapter instance name, mandatory, must be unique
+    # @param [Symbol] name The adapter instance name, mandatory, must be unique
+    # @param [Hash<Symbol, Object>] **config The adapter configuration hash
     #
-    def initialize(name)
+    def initialize(name, **config)
       @name = name
+      @config = config
     end
 
     #
-    # Opens the adapter before using it e.g. open connection, authenticate to http endpoint, open file...
-    # All implementations must ensure that #close! is called after the block execution.
+    # Allow use of adapter with block syntax, automatically closes on block exit.
     #
     # @yield a block to execute when the adapter is opened
     # @return [void]
     #
     def open(&)
+      yield(open!)
+    ensure
+      close!
+    end
+
+    #
+    # Opens the adapter before using it e.g. open connection, authenticate to http endpoint, open file...
+    # This method may return something, as a connection object.
+    #
+    # @return [void]
+    #
+    def open!
       raise NotImplementedError, "An adapter must implement the #open! method"
     end
 

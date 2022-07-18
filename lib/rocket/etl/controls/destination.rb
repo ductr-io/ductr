@@ -7,7 +7,9 @@ module Rocket
         call_method(row)
       end
 
-      def close; end
+      def close
+        adapter.close!
+      end
     end
   end
 end

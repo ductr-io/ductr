@@ -3,8 +3,10 @@
 module Rocket
   module ETL
     class BufferedTransform < Transform
+      attr_reader :buffer
+
       def buffer_size
-        @options[:buffer_size]
+        @options[:buffer_size] || 10_000
       end
 
       def process(row, &)
@@ -20,10 +22,11 @@ module Rocket
 
       def close(&)
         flush_buffer(&) unless @buffer.empty?
+        super
       end
 
       def flush_buffer(&)
-        on_flush(@buffer, &)
+        on_flush(&)
         @buffer = []
       end
     end

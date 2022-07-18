@@ -4,10 +4,11 @@ module Rocket
   module ETL
     class PaginatedSource < Source
       def page_size
-        @options[:page_size]
+        @options[:page_size] || 10_000
       end
 
       def each(&)
+        adapter.open!
         @offset ||= 0
 
         loop do
@@ -15,6 +16,8 @@ module Rocket
 
           @offset += page_size
         end
+
+        adapter.close!
       end
     end
   end

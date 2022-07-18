@@ -18,6 +18,7 @@ end
 #
 module Rocket
   class AdapterNotFoundError < StandardError; end
+  class InconsistentPaginationError < StandardError; end
 
   class << self
     #
