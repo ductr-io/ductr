@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name = "rocket_etl"
   spec.version = Rocket::VERSION
   spec.authors = ["Mathieu Morel"]
-  spec.email = ["mathieu@lamanufacrure.dev"]
+  spec.email = ["mathieu@lamanufacture.dev"]
 
   spec.summary = "Data pipeline and ETL framework."
   spec.description = "A data pipeline and ETL framework for ruby."
