@@ -103,8 +103,11 @@ module Rocket
       def transform_ractor(transform)
         Ractor.new(transform) do |transform|
           loop do
-            row = transform.process(Ractor.receive)
-            Ractor.yield(row, move: true)
+            row = transform.process(Ractor.receive) do |r|
+              Ractor.yield(r)
+            end
+
+            Ractor.yield(row) if row
           end
           transform.close
 
