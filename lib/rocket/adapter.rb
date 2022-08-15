@@ -7,7 +7,7 @@ module Rocket
   class Adapter
     class << self
       #
-      # All the sources declared pour this adapter goes here.
+      # All the sources declared for this adapter goes here.
       #
       # @return [ControlRegistry] The registry instance
       #
@@ -16,7 +16,7 @@ module Rocket
       end
 
       #
-      # All the lookups declared pour this adapter goes here.
+      # All the lookups declared for this adapter goes here.
       #
       # @return [ControlRegistry] The registry instance
       #
@@ -25,7 +25,7 @@ module Rocket
       end
 
       #
-      # All the destinations declared pour this adapter goes here.
+      # All the destinations declared for this adapter goes here.
       #
       # @return [ControlRegistry] The registry instance
       #

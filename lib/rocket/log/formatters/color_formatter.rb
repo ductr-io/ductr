@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "logger"
+require "colorized_string"
 
 module Rocket
   module Log
@@ -9,7 +10,7 @@ module Rocket
     #
     class ColorFormatter < ::Logger::Formatter
       #
-      # Colores the given log entry.
+      # Colorizes the given log entry.
       #
       # @param [Integer] level The log's severity level
       # @param [Time] time The log's timestamp
@@ -19,26 +20,28 @@ module Rocket
       # @return [String] The formatted log
       #
       def call(level, time, prog_name, message)
-        format(
-          "#{c(:gray, "%s, [%s #%d]")} #{c(level, "%5s")} -- #{c(:blue, "%s:")} %s\n",
-          level[0], format_datetime(time), Process.pid, level, prog_name, msg2str(message)
-        )
+        format(format_str(level), level[0], format_datetime(time), Process.pid, level, prog_name, msg2str(message))
       end
 
       private
 
       #
-      # Colores a string based on the given color name or log level.
+      # Generates the colorized format string based on the log level.
       #
-      # @param [String, Symbol] name The desired color name
-      # @param [String] str The string to colorize
+      # @param [String] level The log level
       #
-      # @return [String] The colorized string
+      # @return [String] The colored format string
       #
-      def c(name, str)
-        colors = { "DEBUG" => 32, "INFO" => 36, "WARN" => 33, "ERROR" => 31, "FATAL" => 41, gray: 90, blue: 34 }
+      def format_str(level)
+        colors = {
+          "DEBUG" => :green, "INFO" => :cyan, "WARN" => :yellow, "ERROR" => :red, "FATAL" => { background: :red }
+        }
 
-        "\033[#{colors[name]}m#{str}\033[0m"
+        timestamp = ColorizedString["%s, [%s #%d]"].colorize(:light_black)
+        level_name = ColorizedString["%5s"].colorize(colors[level])
+        prog_name = ColorizedString["%s:"].colorize(:blue)
+
+        "#{timestamp} #{level_name} -- #{prog_name} %s\n"
       end
     end
   end

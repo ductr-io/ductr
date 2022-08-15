@@ -63,7 +63,7 @@ module Rocket
       end
 
       #
-      # Create configured outputs instances, meaning that you can't adds outputs in an already instantiated logger.
+      # Create configured outputs instances, meaning that you can't add outputs in an already instantiated logger.
       #
       def initialize
         @outputs = self.class.outputs.map do |output_with_params|
@@ -140,7 +140,7 @@ module Rocket
       # @return [void]
       #
       def write(severity, message)
-        return true if severity < self.class.level
+        return if severity < self.class.level
 
         prog_name = caller_locations(2, 1).first.label
 

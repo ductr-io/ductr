@@ -40,16 +40,16 @@ module Rocket
       private
 
       #
-      # Finds the method associated to the given annotation names in the job class.
+      # Finds the method(s) associated to the given annotation names in the job class.
       #
-      # @param [Array<Symbol>] *annotation_name The annotation names of the searched methods
+      # @param [Array<Symbol>] *annotation_names The annotation names of the searched methods
       # @yield [method] The block to execute on each founded methods
       # @yieldparam [method] A job's method
       #
       # @return [Array] Returns mapped array containing the block's returned value
       #
-      def find_method(*annotation_name, &)
-        self.class.annotated_methods(*annotation_name).map(&)
+      def find_method(*annotation_names, &)
+        self.class.annotated_methods(*annotation_names).map(&)
       end
 
       #

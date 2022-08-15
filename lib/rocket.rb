@@ -47,7 +47,7 @@ module Rocket
     # @return [String] The Rocket environment
     #
     def env
-      ENV.fetch("ROCKET_ENV", "development")
+      @env ||= ENV.fetch("ROCKET_ENV", "development").downcase
     end
 
     #

@@ -132,7 +132,7 @@ module Rocket
       end
 
       #
-      # Connects controls ractor to each others.
+      # Connects controls ractor to each other.
       #
       # @param [Array<Ractor>] pipe_inputs The ractors to connect to the the pipe's input.
       # @param [Array<Ractor>] pipe_outputs The ractors to connect to the the pipe's output.
