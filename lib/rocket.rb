@@ -8,6 +8,9 @@ Zeitwerk::Loader.for_gem.tap do |loader|
   loader.inflector.inflect "dsl" => "DSL"
 
   loader.collapse "#{__dir__}/rocket/etl/controls"
+  loader.collapse "#{__dir__}/rocket/log/outputs"
+  loader.collapse "#{__dir__}/rocket/log/formatters"
+
   loader.ignore "#{__dir__}/rocket/cli/templates"
 
   loader.setup
@@ -18,11 +21,18 @@ end
 #
 module Rocket
   class AdapterNotFoundError < StandardError; end
+  class ControlNotFoundError < StandardError; end
   class InconsistentPaginationError < StandardError; end
 
   class << self
     #
-    # The adapter instances registry, all declared connectors are in the registry.
+    # Contains all the Rocket configuration.
+    #
+    # @return [Configuration] The configuration instance
+    attr_reader :config
+
+    #
+    # The adapter classes registry, all declared adapters are in the registry.
     #
     # @return [AdapterRegistry] The registry instance
     #
@@ -31,23 +41,49 @@ module Rocket
     end
 
     #
-    # Contains all the Rocket configuration.
+    # The Rocket current environment, "development" by default.
+    # You can change it by setting the `ROCKET_ENV` environment variable.
     #
-    # @return [Configuration] The configuration instance
+    # @return [String] The Rocket environment
     #
-    def config
-      @config ||= Configuration.new
+    def env
+      @env ||= ENV.fetch("ROCKET_ENV", "development").downcase
+    end
+
+    #
+    # Determines if Rocket is in development mode.
+    #
+    # @return [Boolean] True if ROCKET_ENV is set to "development" or nil
+    #
+    def development?
+      env == "development"
+    end
+
+    #
+    # Determines if Rocket is in production mode.
+    #
+    # @return [Boolean] True if ROCKET_ENV is set to "production"
+    #
+    def production?
+      env == "production"
     end
 
     #
     # The configure block allows to configure Rocket internals.
+    # You must calls this method one and only one time to use the framework.
     #
     # @return [void]
     # @yield [config] Configure the framework
-    # @yieldparam config [Configuration] The configuration instance
+    # @yieldparam [Configuration] config The configuration instance
     #
     def configure
-      yield(config)
+      @config = Configuration.new(env)
+      yield(@config)
+
+      Ractor.make_shareable @config
+      Ractor.make_shareable @adapter_registry
+      Ractor.make_shareable @config.logging.outputs
+      @adapter_registry.adapters.each(&:make_shareable)
     end
 
     #
@@ -56,7 +92,7 @@ module Rocket
     # @return [SemanticLogger::Logger] The logger instance
     #
     def logger
-      @logger ||= config.logging[Rocket]
+      @logger ||= config.logging.new
     end
   end
 end

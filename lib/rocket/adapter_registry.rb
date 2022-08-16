@@ -2,11 +2,11 @@
 
 module Rocket
   #
-  # The registry pattern to store adapter instances.
+  # The registry pattern to store adapters.
   #
   class AdapterRegistry
     #
-    # Initialize the registry as an empty array
+    # Initialize the registry as an empty hash
     #
     def initialize
       @adapters = {}
@@ -15,13 +15,22 @@ module Rocket
     #
     # Allow to add one adapter class into the registry
     #
-    # @param name [Symbol] The adapter names
-    # @param adapter [Class] The adapter to add in the registry
+    # @param adapter [Class<Adapter>] The adapter to add in the registry
+    # @param as: [Symbol] The adapter name
     #
     # @return [void]
     #
     def add(adapter, as:) # rubocop:disable Naming/MethodParameterName
       @adapters[as.to_sym] = adapter
+    end
+
+    #
+    # Get the full list of adapters in the form of an array
+    #
+    # @return [Array<Class<Adapter>>] the full adapters list
+    #
+    def adapters
+      @adapters.values
     end
 
     #

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "semantic_logger"
-require "config"
+require "yaml"
+require "erb"
 
 module Rocket
   #
@@ -12,11 +12,7 @@ module Rocket
   # - YML file configuration
   #
   class Configuration
-    # @return [String] The Rocket environment
-    attr_reader :env
-
-    # @return [Module<SemanticLogger>] The semantic logger constant
-    # @see https://logger.rocketjob.io/api.html For further documentation
+    # @return [Class<Rocket::Log::Logger>] The logger constant
     attr_reader :logging
 
     # @return [String] The project root
@@ -29,29 +25,10 @@ module Rocket
     # Initializing environment to "development" by default, setting project root, parsing YML with the config gem
     # and aliasing semantic logger gem constant to make it usable through the `Rocket.configure` block
     #
-    def initialize
-      @env = ENV.fetch("ROCKET_ENV", "development")
+    def initialize(env)
       @root = Dir.pwd
-      @yml = Config.load_files("#{root}/config/#{env}.yml")
-      @logging = SemanticLogger
-    end
-
-    #
-    # Determines if Rocket is in development mode.
-    #
-    # @return [Boolean] True if ROCKET_ENV is set to "development" or nil
-    #
-    def development?
-      env == "development"
-    end
-
-    #
-    # Determines if Rocket is in production mode.
-    #
-    # @return [Boolean] True if ROCKET_ENV is set to "production"
-    #
-    def production?
-      env == "production"
+      @yml = load_yaml("#{root}/config/#{env}.yml")
+      @logging = Log::Logger
     end
 
     #
@@ -60,7 +37,7 @@ module Rocket
     # @return [Array<Adapter>] The configured Adapter instances
     #
     def adapters
-      @adapters ||= yml.adapters.map do |name, entry|
+      yml.adapters.to_h.map do |name, entry|
         adapter_class = Rocket.adapter_registry.find_by_type(entry.adapter)
         config = entry.to_h.except(:adapter)
 
@@ -82,6 +59,42 @@ module Rocket
       adapters.find(not_found_error) do |adapter|
         adapter.name == name
       end
+    end
+
+    private
+
+    #
+    # Load YAML configuration localized at given path.
+    # Parse the file with ERB before parsing YAML, so we can use env vars in config files.
+    #
+    # @param [String] path The path of the YAML file to load
+    #
+    # @return [Struct] The parsed YAML configuration
+    #
+    def load_yaml(path)
+      return {} unless path && File.exist?(path)
+
+      erb = ERB.new File.read(path)
+      yaml = YAML.load(erb.result, symbolize_names: true)
+
+      hash_to_struct(yaml)
+    end
+
+    #
+    # Recursively convert Hash into Struct.
+    #
+    # @param [Hash] hash The hash to convert
+    #
+    # @return [Struct] The converted hash
+    #
+    def hash_to_struct(hash)
+      values = hash.values.map do |value|
+        next hash_to_struct(value) if value.is_a?(Hash)
+
+        value
+      end
+
+      Struct.new(*hash.keys).new(*values)
     end
   end
 end

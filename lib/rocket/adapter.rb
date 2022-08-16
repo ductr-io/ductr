@@ -6,16 +6,42 @@ module Rocket
   #
   class Adapter
     class << self
+      #
+      # All the sources declared for this adapter goes here.
+      #
+      # @return [ControlRegistry] The registry instance
+      #
       def source_registry
         @source_registry ||= ControlRegistry.new
       end
 
+      #
+      # All the lookups declared for this adapter goes here.
+      #
+      # @return [ControlRegistry] The registry instance
+      #
       def lookup_registry
         @lookup_registry ||= ControlRegistry.new
       end
 
+      #
+      # All the destinations declared for this adapter goes here.
+      #
+      # @return [ControlRegistry] The registry instance
+      #
       def destination_registry
         @destination_registry ||= ControlRegistry.new
+      end
+
+      #
+      # Make the registries ractor shareable, which freezes them.
+      #
+      # @return [void]
+      #
+      def make_shareable
+        Ractor.make_shareable @source_registry
+        Ractor.make_shareable @lookup_registry
+        Ractor.make_shareable @destination_registry
       end
     end
 
