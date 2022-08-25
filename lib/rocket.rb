@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_job"
 require "zeitwerk"
 
 Zeitwerk::Loader.for_gem.tap do |loader|
@@ -79,6 +80,7 @@ module Rocket
     def configure
       @config = Configuration.new(env)
       yield(@config)
+      @config.apply_active_job_config
 
       Ractor.make_shareable @config
       Ractor.make_shareable @adapter_registry

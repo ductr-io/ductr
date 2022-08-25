@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 1.21"
 
+  spec.add_dependency "activejob", "~> 7.0"
   spec.add_dependency "colorize", "~> 0.8"
   spec.add_dependency "kiba", "~> 4.0"
   spec.add_dependency "thor", "~> 1.2"

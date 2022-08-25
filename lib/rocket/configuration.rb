@@ -12,6 +12,10 @@ module Rocket
   # - YML file configuration
   #
   class Configuration
+    # @return [Struct] The active job configuration, available options are
+    #                  `queue_adapter`, `default_queue_name`, `queue_name_prefix` & `queue_name_delimiter`
+    attr_reader :active_job
+
     # @return [Class<Rocket::Log::Logger>] The logger constant
     attr_reader :logging
 
@@ -29,6 +33,7 @@ module Rocket
       @root = Dir.pwd
       @yml = load_yaml("#{root}/config/#{env}.yml")
       @logging = Log::Logger
+      @active_job = Struct.new(:queue_adapter, :default_queue_name, :queue_name_prefix, :queue_name_delimiter).new
     end
 
     #
@@ -58,6 +63,22 @@ module Rocket
 
       adapters.find(not_found_error) do |adapter|
         adapter.name == name
+      end
+    end
+
+    #
+    # Configures active job with the given options.
+    #
+    # @return [void]
+    #
+    def apply_active_job_config
+      # TODO: Find a way to pass a logger instance to ActiveJob without messing with ractor.
+      # ActiveJob::Base.logger = logging.new
+
+      active_job.each_pair do |opt, value|
+        next unless value
+
+        ActiveJob::Base.send("#{opt}=", value)
       end
     end
 
