@@ -6,9 +6,11 @@ module Rocket
   #
   # The base class for any job, you can use it directly if you don't need an ETL job.
   #
-  class Job
+  class Job < ActiveJob::Base
     extend Annotable
     include ETL::Parser
+
+    queue_as :rocket_jobs
 
     #
     # The active job's perform method. Do NOT override it, implement the #run method instead.

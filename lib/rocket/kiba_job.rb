@@ -36,8 +36,8 @@ module Rocket
     #
     # Parses job's annotations and initializes the KibaRunner.
     #
-    def initialize
-      super
+    def initialize(...)
+      super(...)
 
       @runner = ETL::KibaRunner.new(*parse_annotations)
     end

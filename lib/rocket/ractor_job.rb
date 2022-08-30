@@ -41,8 +41,8 @@ module Rocket
     #
     # Parses job's annotations and initializes the RactorRunner.
     #
-    def initialize
-      super
+    def initialize(...)
+      super(...)
 
       @runner = ETL::RactorRunner.new(*parse_ractor_annotations)
     end
