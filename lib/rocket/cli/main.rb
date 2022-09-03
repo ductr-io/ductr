@@ -5,25 +5,35 @@ require "thor"
 module Rocket
   module CLI
     #
-    # The default CLI is started when no project folder was found.
-    # It expose project and adapter generation tasks.
+    # The main CLI is started when used inside a rocket project folder.
+    # It exposes scheduling and monitoring tasks.
     #
     class Main < Thor
-      desc "start, s", "Start the server"
-      #
-      # Starts the server
-      #
-      # @return [void]
-      #
-      def start
-        say "use Ctrl-C to stop"
+      # desc "start, s", "Start the server"
+      # def start
+      #   say "use Ctrl-C to stop"
 
-        trap "SIGINT" do
-          say "Exiting"
-          exit 130
-        end
+      #   trap "SIGINT" do
+      #     say "Exiting"
+      #     exit 130
+      #   end
 
-        sleep
+      #   sleep
+      # end
+
+      desc "perform, p [JOB]", "Perform the given job"
+      method_option :sync, type: :boolean, default: false, aliases: "-s", desc: "Running the job synchronously"
+      method_option :params, type: :array, aliases: "-p", desc: "Running the job with parameters"
+      def perform(job_name)
+        job = job_name.camelize.constantize.new(*options[:params])
+
+        StoreHelper.track_job(job)
+        return job.perform_now if options[:sync]
+
+        job.enqueue
+        return unless ActiveJob::Base.queue_adapter.is_a? ActiveJob::QueueAdapters::AsyncAdapter
+
+        sleep(0.1) until StoreHelper.all_jobs_done?
       end
     end
   end

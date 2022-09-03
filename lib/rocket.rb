@@ -3,10 +3,12 @@
 require "active_job"
 require "zeitwerk"
 
+#
+# Framework auto loading
+#
 Zeitwerk::Loader.for_gem.tap do |loader|
   loader.inflector.inflect "cli" => "CLI"
   loader.inflector.inflect "etl" => "ETL"
-  loader.inflector.inflect "dsl" => "DSL"
 
   loader.collapse "#{__dir__}/rocket/etl/controls"
   loader.collapse "#{__dir__}/rocket/log/outputs"
@@ -14,6 +16,15 @@ Zeitwerk::Loader.for_gem.tap do |loader|
 
   loader.ignore "#{__dir__}/rocket/cli/templates"
 
+  loader.setup
+end
+
+#
+# Application auto loading
+#
+Zeitwerk::Loader.new.tap do |loader|
+  loader.push_dir("#{Dir.pwd}/app")
+  loader.collapse("#{Dir.pwd}/app/jobs")
   loader.setup
 end
 
@@ -91,10 +102,21 @@ module Rocket
     #
     # The Rocket main logger instance.
     #
-    # @return [SemanticLogger::Logger] The logger instance
+    # @return [Log::Logger] The logger instance
     #
     def logger
       @logger ||= config.logging.new
+    end
+
+    #
+    # The Rocket store, used to share information across different instances.
+    #
+    # @return [ActiveSupport::Cache::Store] The store instance
+    #
+    def store
+      return @store ||= config.store_adapter.new(*config.store_parameters) if config.store_adapter.is_a? Class
+
+      @store ||= ActiveSupport::Cache.lookup_store(config.store_adapter, *config.store_parameters)
     end
   end
 end
