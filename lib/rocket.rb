@@ -114,9 +114,12 @@ module Rocket
     # @return [ActiveSupport::Cache::Store] The store instance
     #
     def store
-      return @store ||= config.store_adapter.new(*config.store_parameters) if config.store_adapter.is_a? Class
-
-      @store ||= ActiveSupport::Cache.lookup_store(config.store_adapter, *config.store_parameters)
+      @store ||= \
+        if config.store_adapter.is_a? Class
+          config.store_adapter.new(*config.store_parameters)
+        else
+          ActiveSupport::Cache.lookup_store(config.store_adapter, *config.store_parameters)
+        end
     end
   end
 end
