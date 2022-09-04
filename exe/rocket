@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "../lib/rocket"
 require "pathname"
 
 EXEC_PATH = "bin/rocket"
@@ -12,10 +11,14 @@ loop do
     exec Gem.ruby, EXEC_PATH, *ARGV
     break
   end
-  break if Pathname.new(Dir.pwd).root?
+
+  if Pathname.new(Dir.pwd).root?
+    Dir.chdir(CURRENT_DIR)
+    break
+  end
 
   Dir.chdir("..")
 end
 
-Dir.chdir(CURRENT_DIR)
+require_relative "../lib/rocket"
 Rocket::CLI::Default.start

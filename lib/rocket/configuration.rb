@@ -22,6 +22,13 @@ module Rocket
     # @return [String] The project root
     attr_reader :root
 
+    # @return [Class<ActiveSupport::Cache::Store>, Symbol] The store adapter to use
+    #   @see https://edgeapi.rubyonrails.org/classes/ActiveSupport/Cache.html#method-c-lookup_store
+    attr_reader :store_adapter
+
+    # @return [Array] The store adapter config
+    attr_reader :store_parameters
+
     # @return [Hash] The parsed YML configuration
     attr_reader :yml
 
@@ -34,6 +41,21 @@ module Rocket
       @yml = load_yaml("#{root}/config/#{env}.yml")
       @logging = Log::Logger
       @active_job = Struct.new(:queue_adapter, :default_queue_name, :queue_name_prefix, :queue_name_delimiter).new
+      @store_adapter = ActiveSupport::Cache::FileStore
+      @store_parameters = ["tmp/store"]
+    end
+
+    #
+    # Configures the store instance.
+    #
+    # @param [Class<ActiveSupport::Cache::Store>, Symbol] adapter The store adapter class
+    # @param [Array] *parameters The store adapter configuration
+    #
+    # @return [void]
+    #
+    def store(adapter, *parameters)
+      @store_adapter = adapter
+      @store_parameters = parameters
     end
 
     #
@@ -73,6 +95,8 @@ module Rocket
     #
     def apply_active_job_config
       # TODO: Find a way to pass a logger instance to ActiveJob without messing with ractor.
+      #       See https://gitlab.com/la-manufacture/rocket/rocket/-/issues/9 to track this one.
+
       # ActiveJob::Base.logger = logging.new
 
       active_job.each_pair do |opt, value|
