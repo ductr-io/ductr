@@ -21,8 +21,9 @@ module Rocket
       #   sleep
       # end
 
-      desc "perform, p [JOB]", "Perform the given job"
-      method_option :sync, type: :boolean, default: false, aliases: "-s", desc: "Running the job synchronously"
+      desc "perform, p [JOB]", "Queues the given job"
+      method_option :sync, type: :boolean, default: false, aliases: "-s",
+                           desc: "Runs the job synchronously instead of queueing it"
       method_option :params, type: :array, aliases: "-p", desc: "Running the job with parameters"
       def perform(job_name)
         job = job_name.camelize.constantize.new(*options[:params])
