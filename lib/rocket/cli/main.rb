@@ -28,13 +28,13 @@ module Rocket
       def perform(job_name)
         job = job_name.camelize.constantize.new(*options[:params])
 
-        StoreHelper.track_job(job)
+        job.is_a?(Pipeline) ? Store.register_pipeline(job) : Store.register_job(job)
         return job.perform_now if options[:sync]
 
         job.enqueue
         return unless ActiveJob::Base.queue_adapter.is_a? ActiveJob::QueueAdapters::AsyncAdapter
 
-        sleep(0.1) until StoreHelper.all_jobs_done?
+        sleep(0.1) until Store.all_done?
       end
     end
   end

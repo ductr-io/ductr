@@ -17,13 +17,13 @@ module Rocket
 
     queue_as :rocket_jobs
 
-    before_enqueue { |job| job.update_status(:queued) }
-    before_perform { |job| job.update_status(:working) }
-    after_perform { |job| job.update_status(:completed) }
+    before_enqueue { |job| job.status = :queued }
+    before_perform { |job| job.status = :working }
+    after_perform { |job| job.status = :completed }
 
     rescue_from(Exception) do |e|
       @error = e
-      update_status(:failed)
+      self.status = :failed
 
       raise e
     end
@@ -64,9 +64,13 @@ module Rocket
     #
     # @return [void]
     #
-    def update_status(status)
+    def status=(status)
       @status = status
-      StoreHelper.update_job(self)
+      Store.write_job(self)
+    end
+
+    def stopped?
+      %i[completed failed].include? status
     end
 
     #
