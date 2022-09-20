@@ -23,10 +23,12 @@ end
 #
 # Application auto loading
 #
-Zeitwerk::Loader.new.tap do |loader|
-  loader.push_dir("#{Dir.pwd}/app")
-  loader.collapse("#{Dir.pwd}/app/jobs")
-  loader.setup
+if File.directory?("#{Dir.pwd}/app")
+  Zeitwerk::Loader.new.tap do |loader|
+    loader.push_dir("#{Dir.pwd}/app")
+    loader.collapse("#{Dir.pwd}/app/jobs")
+    loader.setup
+  end
 end
 
 #
