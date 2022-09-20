@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "active_job"
+require "forwardable"
 require "zeitwerk"
 
 #

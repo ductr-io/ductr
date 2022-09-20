@@ -2,21 +2,84 @@
 
 module Rocket
   module Store
+    #
+    # Convert pipelines and steps into active job serializable structs.
+    #
     module PipelineSerializer
+
+      #
+      # @!parse
+      #   #
+      #   # The pipeline representation as a struct.
+      #   #
+      #   # @!attribute [r] job_id
+      #   #   @return [String] The active job's job id
+      #   #
+      #   # @!attribute [r] status
+      #   #   @return [Symbol] The pipeline job status
+      #   #
+      #   # @!attribute [r] steps
+      #   #   @return [Array<SerializedPipelineStep>] The pipeline steps as struct
+      #   #
+      #   class SerializedPipeline < Struct
+      #     #
+      #     # @param [String] job_id Pipeline job id
+      #     # @param [Symbol] status Pipeline status
+      #     # @param [Array<SerializedPipelineStep>] steps Pipeline steps as struct
+      #     #
+      #     def initialize(job_id, status, steps)
+      #       @job_id = job_id
+      #       @status = status
+      #       @steps = steps
+      #     end
+      #   end
+      #
       SerializedPipeline = Struct.new(:job_id, :status, :steps) do
+        #
+        # Determines whether the pipeline has a `completed` or `failed` status.
+        #
+        # @return [Boolean] True when the status is `completed` or `failed`
+        #
         def stopped?
           %i[completed failed].include? status
         end
       end
 
+      #
+      # @!parse
+      #   #
+      #   # The pipeline step representation as a struct.
+      #   #
+      #   # @!attribute [r] jobs
+      #   #   @return [Array<Job>] The step's jobs
+      #   #
+      #   # @!attribute [r] done
+      #   #   @return [Boolean] The step's fiber state
+      #   #
+      #   class SerializedPipelineStep < Struct
+      #     #
+      #     # @param [Array<Job>] jobs The step's jobs
+      #     # @param [Boolean] done The step's fiber state
+      #     #
+      #     def initialize(jobs, done)
+      #       @jobs = jobs
+      #       @done = done
+      #     end
+      #   end
+      #
       SerializedPipelineStep = Struct.new(:jobs, :done) do
+        #
+        # Check if the step is done.
+        #
+        # @return [Boolean] True if the step is done
+        #
         def done?
           done
         end
       end
 
       def serialize_pipeline(pipeline)
-        serialized_steps = pipeline.steps.map do |step|
+        serialized_steps = pipeline.runner.steps.map do |step|
           SerializedPipelineStep.new(step.jobs, step.done?)
         end
         SerializedPipeline.new(pipeline.job_id, pipeline.status, serialized_steps)

@@ -17,6 +17,9 @@ module Rocket
       #
       # Get all known job instances for the given registry_key and job's key_prefix.
       #
+      # @param [String] registry_key The registry key in which job keys will be read
+      # @param [String] key_prefix The cache key prefix for the registry's job keys
+      #
       # @return [Array<Job>] The job instances
       #
       def all(registry_key, key_prefix)

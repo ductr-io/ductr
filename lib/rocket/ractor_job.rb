@@ -36,6 +36,15 @@ module Rocket
   #   end
   #
   class RactorJob < Job
+    include ETL::Parser
+
+    #
+    # @!method run
+    #   Starts the ractor runner.
+    #   @return [void]
+    #
+    def_delegators :@runner, :run
+
     annotable :source, :transform, :lookup, :destination, :send_to
 
     #
@@ -45,16 +54,6 @@ module Rocket
       super(...)
 
       @runner = ETL::RactorRunner.new(*parse_ractor_annotations)
-    end
-
-    #
-    # Initializes ractors and waits for them to finish.
-    #
-    # @return [void]
-    #
-    def run
-      @runner.create_ractors!
-      @runner.take_ractors!
     end
   end
 end
