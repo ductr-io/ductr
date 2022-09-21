@@ -6,6 +6,7 @@ module Rocket
     # Convert pipelines and steps into active job serializable structs.
     #
     module PipelineSerializer
+      include JobSerializer
 
       #
       # @!parse
@@ -78,10 +79,21 @@ module Rocket
         end
       end
 
+      #
+      # Convert the given pipeline and its steps into
+      # `SerializedPipeline` and `SerializedPipelineStep` structs.
+      #
+      # @param [Pipeline] pipeline The pipeline to serialize
+      #
+      # @return [SerializedPipeline] The pipeline converted into struct
+      #
       def serialize_pipeline(pipeline)
         serialized_steps = pipeline.runner.steps.map do |step|
-          SerializedPipelineStep.new(step.jobs, step.done?)
+          jobs = step.jobs.map { |j| serialize_job(j) }
+
+          SerializedPipelineStep.new(jobs, step.done?)
         end
+
         SerializedPipeline.new(pipeline.job_id, pipeline.status, serialized_steps)
       end
     end

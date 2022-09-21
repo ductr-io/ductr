@@ -6,6 +6,8 @@ module Rocket
     # Job's level store interactions.
     #
     module JobStore
+      include JobSerializer
+
       # @return [String] The job key prefix
       JOB_KEY_PREFIX = "rocket:job"
       # @return [String] The job registry key
@@ -39,7 +41,7 @@ module Rocket
       # @return [void]
       #
       def write_job(job)
-        write(JOB_KEY_PREFIX, job)
+        write(JOB_KEY_PREFIX, serialize_job(job))
       end
 
       #
@@ -50,7 +52,7 @@ module Rocket
       # @return [void]
       #
       def register_job(job)
-        register(JOB_REGISTRY_KEY, job)
+        register(JOB_REGISTRY_KEY, serialize_job(job))
       end
     end
   end
