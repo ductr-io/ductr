@@ -37,6 +37,25 @@ module Rocket
   #     end
   #   end
   #
+  # You can define pipelines with only one step by using `after` annotation without parameter:
+  #
+  #   class MonoStepPipeline < Rocket::Pipeline
+  #     after
+  #     def unique_step
+  #       async(MyJob)
+  #       async(MyJob)
+  #     end
+  #   end
+  #
+  # A pipeline can inherit from another, allowing you to overload and add steps to the parent pipeline:
+  #
+  #   class InheritPipeline < MonoStepPipeline
+  #     after :unique_step
+  #     def not_that_unique
+  #       async(MyJob)
+  #     end
+  #   end
+  #
   class Pipeline < Job
     #
     # @!method self.after

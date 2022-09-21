@@ -25,8 +25,11 @@ end
 #
 if File.directory?("#{Dir.pwd}/app")
   Zeitwerk::Loader.new.tap do |loader|
-    loader.push_dir("#{Dir.pwd}/app")
-    loader.collapse("#{Dir.pwd}/app/jobs")
+    loader.push_dir "#{Dir.pwd}/app"
+
+    loader.collapse "#{Dir.pwd}/app/jobs"
+    loader.collapse "#{Dir.pwd}/app/pipelines"
+
     loader.setup
   end
 end
