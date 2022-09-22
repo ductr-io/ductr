@@ -17,18 +17,23 @@ module Rocket
       #   # @!attribute [r] status
       #   #   @return [Symbol] The job's status
       #   #
-      #   class SerializedPipeline < Struct
+      #   # @!attribute [r] error
+      #   #   @return [Exception, nil] The job's error if any
+      #   #
+      #   class SerializedJob < Struct
       #     #
       #     # @param [String] job_id Active job's job id
       #     # @param [Symbol] status Job's status
+      #     # @param [Exception, nil] error Job's error
       #     #
-      #     def initialize(job_id, status)
+      #     def initialize(job_id, status, error)
       #       @job_id = job_id
       #       @status = status
+      #       @error = error
       #     end
       #   end
       #
-      SerializedJob = Struct.new(:job_id, :status) do
+      SerializedJob = Struct.new(:job_id, :status, :error) do
         #
         # Determines whether the job has a `completed` or `failed` status.
         #
@@ -47,7 +52,7 @@ module Rocket
       # @return [SerializedJob] The job converted into struct
       #
       def serialize_job(job)
-        SerializedJob.new(job.job_id, job.status)
+        SerializedJob.new(job.job_id, job.status, job.error)
       end
     end
   end

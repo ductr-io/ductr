@@ -19,6 +19,9 @@ module Rocket
       #   # @!attribute [r] status
       #   #   @return [Symbol] The pipeline job status
       #   #
+      #   # @!attribute [r] error
+      #   #   @return [Exception, nil] The pipeline job error if any
+      #   #
       #   # @!attribute [r] steps
       #   #   @return [Array<SerializedPipelineStep>] The pipeline steps as struct
       #   #
@@ -26,16 +29,18 @@ module Rocket
       #     #
       #     # @param [String] job_id Pipeline job id
       #     # @param [Symbol] status Pipeline status
+      #     # @param [Exception, nil] error Pipeline error
       #     # @param [Array<SerializedPipelineStep>] steps Pipeline steps as struct
       #     #
-      #     def initialize(job_id, status, steps)
+      #     def initialize(job_id, status, error, steps)
       #       @job_id = job_id
       #       @status = status
+      #       @error = error
       #       @steps = steps
       #     end
       #   end
       #
-      SerializedPipeline = Struct.new(:job_id, :status, :steps) do
+      SerializedPipeline = Struct.new(:job_id, :status, :error, :steps) do
         #
         # Determines whether the pipeline has a `completed` or `failed` status.
         #
@@ -94,7 +99,7 @@ module Rocket
           SerializedPipelineStep.new(jobs, step.done?)
         end
 
-        SerializedPipeline.new(pipeline.job_id, pipeline.status, serialized_steps)
+        SerializedPipeline.new(pipeline.job_id, pipeline.status, pipeline.error, serialized_steps)
       end
     end
   end
