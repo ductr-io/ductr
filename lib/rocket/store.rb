@@ -4,7 +4,7 @@ require "set"
 
 module Rocket
   #
-  # Store related methods for internal usage.
+  # Store interaction helpers for internal usage.
   #
   module Store
     extend JobStore
