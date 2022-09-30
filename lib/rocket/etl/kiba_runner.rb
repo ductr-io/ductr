@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "forwardable"
 require "kiba"
 
 module Rocket

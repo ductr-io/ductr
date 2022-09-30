@@ -44,6 +44,16 @@ module Rocket
         @destination_ractors.each_value(&:take)
       end
 
+      #
+      # Initializes ractors and waits for them to finish.
+      #
+      # @return [void]
+      #
+      def run
+        create_ractors!
+        take_ractors!
+      end
+
       private
 
       #

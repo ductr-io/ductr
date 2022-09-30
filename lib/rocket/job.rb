@@ -8,7 +8,9 @@ module Rocket
   #
   class Job < ActiveJob::Base
     extend Annotable
-    include ETL::Parser
+    extend Forwardable
+
+    include JobStatus
 
     # @return [Exception] The occurred error if any
     attr_reader :error
@@ -16,17 +18,6 @@ module Rocket
     attr_reader :status
 
     queue_as :rocket_jobs
-
-    before_enqueue { |job| job.update_status(:queued) }
-    before_perform { |job| job.update_status(:working) }
-    after_perform { |job| job.update_status(:completed) }
-
-    rescue_from(Exception) do |e|
-      @error = e
-      update_status(:failed)
-
-      raise e
-    end
 
     #
     # The active job's perform method. DO NOT override it, implement the #run method instead.
@@ -55,18 +46,6 @@ module Rocket
     #
     def logger
       Rocket.config.logging.new
-    end
-
-    #
-    # Writes the job's status into the Rocket's store.
-    #
-    # @param [Symbol] status The status of the job
-    #
-    # @return [void]
-    #
-    def update_status(status)
-      @status = status
-      StoreHelper.update_job(self)
     end
 
     #
