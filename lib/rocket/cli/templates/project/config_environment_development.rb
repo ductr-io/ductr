@@ -1,14 +1,18 @@
 # frozen_string_literal: true
+require "active_support/cache/file_store"
 
 Rocket.configure do |config|
-  # Logging configuration, rely on the Semantic Logger gem.
+  # Store configuration.
+  #
+  # You can pass an `ActiveSupport::Cache::Store` class or a symbol
+  config.store(ActiveSupport::Cache::FileStore, "tmp/store")
+
+  # Logging configuration.
   #
   # The following logging levels are available:
-  # :trace, :debug, :info, :warn, :error, :fatal
-  # See https://logger.rocketjob.io/api.html for further details about logging levels.
-  config.logging.default_level = :trace
+  # :debug, :info, :warn, :error, :fatal
+  config.logging.level = :debug
 
-  # Append logs to the stdout by default, you add/replace appenders at will.
-  # see https://logger.rocketjob.io/appenders.html for further information about appenders.
-  config.logging.add_appender(io: $stdout)
+  # Append logs to the stdout by default, you can add/replace outputs at will.
+  config.logging.add_output(Rocket::Log::StandardOutput, Rocket::Log::ColorFormatter)
 end

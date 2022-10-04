@@ -1,2 +1,8 @@
-# Add your vars here, you can make erb binding e.g.:
+# Add your vars here, you can make erb bindings e.g.:
 # example: <%= ENV.fetch("SOME_VAR", "some default value") %>
+
+# declare your adapters here
+adapters:
+  # my_adapter:
+  #   adapter: sqlite
+  #   database: some.db
