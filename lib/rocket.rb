@@ -52,10 +52,10 @@ module Rocket
     #
     # The adapter classes registry, all declared adapters are in the registry.
     #
-    # @return [AdapterRegistry] The registry instance
+    # @return [Registry] The registry instance
     #
     def adapter_registry
-      @adapter_registry ||= AdapterRegistry.new
+      @adapter_registry ||= Registry.new(:adapter)
     end
 
     #
@@ -102,7 +102,7 @@ module Rocket
       Ractor.make_shareable @config
       Ractor.make_shareable @adapter_registry
       Ractor.make_shareable @config.logging.outputs
-      @adapter_registry.adapters.each(&:make_shareable)
+      @adapter_registry.values.each(&:make_shareable)
     end
 
     #

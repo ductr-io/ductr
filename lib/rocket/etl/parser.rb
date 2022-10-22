@@ -92,7 +92,7 @@ module Rocket
         adapter_name, control_type = annotation.params
         adapter = Rocket.config.adapter(adapter_name)
 
-        control_class = adapter.class.send("#{annotation.name}_registry").find_by_type(control_type)
+        control_class = adapter.class.send("#{annotation.name}_registry").find(control_type)
         params = [self, annotated_method.name, adapter_name]
 
         control_class.new(*params, **annotation.options)

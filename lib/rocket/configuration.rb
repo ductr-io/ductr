@@ -65,7 +65,7 @@ module Rocket
     #
     def adapters
       yml.adapters.to_h.map do |name, entry|
-        adapter_class = Rocket.adapter_registry.find_by_type(entry.adapter)
+        adapter_class = Rocket.adapter_registry.find(entry.adapter)
         config = entry.to_h.except(:adapter)
 
         adapter_class.new(name, **config)

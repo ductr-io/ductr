@@ -9,28 +9,28 @@ module Rocket
       #
       # All the sources declared for this adapter goes here.
       #
-      # @return [ControlRegistry] The registry instance
+      # @return [Registry] The registry instance
       #
       def source_registry
-        @source_registry ||= ControlRegistry.new
+        @source_registry ||= Registry.new(:source)
       end
 
       #
       # All the lookups declared for this adapter goes here.
       #
-      # @return [ControlRegistry] The registry instance
+      # @return [Registry] The registry instance
       #
       def lookup_registry
-        @lookup_registry ||= ControlRegistry.new
+        @lookup_registry ||= Registry.new(:lookup)
       end
 
       #
       # All the destinations declared for this adapter goes here.
       #
-      # @return [ControlRegistry] The registry instance
+      # @return [Registry] The registry instance
       #
       def destination_registry
-        @destination_registry ||= ControlRegistry.new
+        @destination_registry ||= Registry.new(:destination)
       end
 
       #
