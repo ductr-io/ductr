@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "annotable"
-
 module Rocket
   #
   # The base class for any job, you can use it directly if you don't need an ETL job.

@@ -44,6 +44,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activejob", "~> 7.0"
   spec.add_dependency "colorize", "~> 0.8"
   spec.add_dependency "kiba", "~> 4.0"
+  spec.add_dependency "rufus-scheduler", "~> 3.8"
   spec.add_dependency "thor", "~> 1.2"
-  spec.add_dependency "zeitwerk", "~> 2.5"
+  spec.add_dependency "zeitwerk", "~> 2.6"
 end

@@ -1,38 +1,9 @@
 # frozen_string_literal: true
 
 require "active_job"
+require "annotable"
 require "forwardable"
 require "zeitwerk"
-
-#
-# Framework auto loading
-#
-Zeitwerk::Loader.for_gem.tap do |loader|
-  loader.inflector.inflect "cli" => "CLI"
-  loader.inflector.inflect "etl" => "ETL"
-
-  loader.collapse "#{__dir__}/rocket/etl/controls"
-  loader.collapse "#{__dir__}/rocket/log/outputs"
-  loader.collapse "#{__dir__}/rocket/log/formatters"
-
-  loader.ignore "#{__dir__}/rocket/cli/templates"
-
-  loader.setup
-end
-
-#
-# Application auto loading
-#
-if File.directory?("#{Dir.pwd}/app")
-  Zeitwerk::Loader.new.tap do |loader|
-    loader.push_dir "#{Dir.pwd}/app"
-
-    loader.collapse "#{Dir.pwd}/app/jobs"
-    loader.collapse "#{Dir.pwd}/app/pipelines"
-
-    loader.setup
-  end
-end
 
 #
 # The main rocket module.
@@ -56,6 +27,15 @@ module Rocket
     #
     def adapter_registry
       @adapter_registry ||= Registry.new(:adapter)
+    end
+
+    #
+    # The trigger classes registry, all declared triggers are in the registry.
+    #
+    # @return [Registry] The registry instance
+    #
+    def trigger_registry
+      @trigger_registry ||= Registry.new(:trigger)
     end
 
     #
@@ -127,5 +107,38 @@ module Rocket
           ActiveSupport::Cache.lookup_store(config.store_adapter, *config.store_parameters)
         end
     end
+  end
+end
+
+#
+# Framework auto loading
+#
+Zeitwerk::Loader.for_gem.tap do |loader|
+  loader.inflector.inflect "cli" => "CLI"
+  loader.inflector.inflect "etl" => "ETL"
+
+  loader.collapse "#{__dir__}/rocket/etl/controls"
+  loader.collapse "#{__dir__}/rocket/log/outputs"
+  loader.collapse "#{__dir__}/rocket/log/formatters"
+
+  loader.ignore "#{__dir__}/rocket/cli/templates"
+
+  loader.setup
+  loader.eager_load # TODO: use #eager_load_namespace when released
+  # loader.eager_load_namespace(Rocket::RufusTrigger)
+end
+
+#
+# Application auto loading
+#
+if File.directory?("#{Dir.pwd}/app")
+  Zeitwerk::Loader.new.tap do |loader|
+    loader.push_dir "#{Dir.pwd}/app"
+
+    loader.collapse "#{Dir.pwd}/app/jobs"
+    loader.collapse "#{Dir.pwd}/app/pipelines"
+    loader.collapse "#{Dir.pwd}/app/schedulers"
+
+    loader.setup
   end
 end

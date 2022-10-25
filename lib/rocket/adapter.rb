@@ -34,6 +34,15 @@ module Rocket
       end
 
       #
+      # All the triggers declared for this adapter goes here.
+      #
+      # @return [Registry] The registry instance
+      #
+      def trigger_registry
+        @trigger_registry ||= Registry.new(:trigger)
+      end
+
+      #
       # Make the registries ractor shareable, which freezes them.
       #
       # @return [void]
@@ -48,14 +57,14 @@ module Rocket
     # @return [Symbol] the adapter instance name
     attr_reader :name
 
-    # @return [Hash<Symbol, Object>] the adapter configuration hash
+    # @return [Hash<Symbol: Object>] the adapter configuration hash
     attr_reader :config
 
     #
     # Creates a new adapter instance.
     #
     # @param [Symbol] name The adapter instance name, mandatory, must be unique
-    # @param [Hash<Symbol, Object>] **config The adapter configuration hash
+    # @param [Hash<Symbol: Object>] **config The adapter configuration hash
     #
     def initialize(name, **config)
       @name = name
