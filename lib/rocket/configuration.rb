@@ -39,7 +39,11 @@ module Rocket
     def initialize(env)
       @root = Dir.pwd
       @yml = load_yaml("#{root}/config/#{env}.yml")
+
       @logging = Log::Logger
+      logging.level = :debug
+      logging.add_output(Log::StandardOutput, Log::ColorFormatter)
+
       @active_job = Struct.new(:queue_adapter, :default_queue_name, :queue_name_prefix, :queue_name_delimiter).new
       @store_adapter = ActiveSupport::Cache::FileStore
       @store_parameters = ["tmp/store"]
@@ -65,7 +69,7 @@ module Rocket
     #
     def adapters
       yml.adapters.to_h.map do |name, entry|
-        adapter_class = Rocket.adapter_registry.find_by_type(entry.adapter)
+        adapter_class = Rocket.adapter_registry.find(entry.adapter)
         config = entry.to_h.except(:adapter)
 
         adapter_class.new(name, **config)

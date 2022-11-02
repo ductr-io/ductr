@@ -9,18 +9,6 @@ module Rocket
     # It exposes scheduling and monitoring tasks.
     #
     class Main < Thor
-      # desc "start, s", "Start the server"
-      # def start
-      #   say "use Ctrl-C to stop"
-
-      #   trap "SIGINT" do
-      #     say "Exiting"
-      #     exit 130
-      #   end
-
-      #   sleep
-      # end
-
       desc "perform, p [JOB]", "Queues the given job"
       method_option :sync, type: :boolean, default: false, aliases: "-s",
                            desc: "Runs the job synchronously instead of queueing it"
@@ -35,6 +23,37 @@ module Rocket
         return unless ActiveJob::Base.queue_adapter.is_a? ActiveJob::QueueAdapters::AsyncAdapter
 
         sleep(0.1) until Store.all_done?
+      end
+
+      desc "schedule, s [SCHEDULERS]", "Run the given schedulers"
+      def schedule(*scheduler_names)
+        scheduler_names.each { |name| name.camelize.constantize.new }
+        Scheduler.start
+
+        sleep_until_interrupt do
+          Scheduler.stop
+        end
+      end
+
+      private
+
+      #
+      # Keeps the thread alive until Ctrl-C is pressed.
+      #
+      # @yield The block to execute when Ctrl-C is pressed
+      #
+      # @return [void]
+      #
+      def sleep_until_interrupt(&)
+        say "use Ctrl-C to stop"
+
+        trap "SIGINT" do
+          say "Exiting"
+          yield
+          exit 130
+        end
+
+        sleep
       end
     end
   end
