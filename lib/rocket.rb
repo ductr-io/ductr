@@ -6,16 +6,16 @@ require "forwardable"
 require "zeitwerk"
 
 #
-# The main rocket module.
+# The main Ductr module.
 #
-module Rocket
+module Ductr
   class AdapterNotFoundError < StandardError; end
   class ControlNotFoundError < StandardError; end
   class InconsistentPaginationError < StandardError; end
 
   class << self
     #
-    # Contains all the Rocket configuration.
+    # Contains all the Ductr configuration.
     #
     # @return [Configuration] The configuration instance
     attr_reader :config
@@ -39,35 +39,35 @@ module Rocket
     end
 
     #
-    # The Rocket current environment, "development" by default.
-    # You can change it by setting the `ROCKET_ENV` environment variable.
+    # The Ductr current environment, "development" by default.
+    # You can change it by setting the `DUCTR_ENV` environment variable.
     #
-    # @return [String] The Rocket environment
+    # @return [String] The Ductr environment
     #
     def env
-      @env ||= ENV.fetch("ROCKET_ENV", "development").downcase
+      @env ||= ENV.fetch("DUCTR_ENV", "development").downcase
     end
 
     #
-    # Determines if Rocket is in development mode.
+    # Determines if Ductr is in development mode.
     #
-    # @return [Boolean] True if ROCKET_ENV is set to "development" or nil
+    # @return [Boolean] True if DUCTR_ENV is set to "development" or nil
     #
     def development?
       env == "development"
     end
 
     #
-    # Determines if Rocket is in production mode.
+    # Determines if Ductr is in production mode.
     #
-    # @return [Boolean] True if ROCKET_ENV is set to "production"
+    # @return [Boolean] True if DUCTR_ENV is set to "production"
     #
     def production?
       env == "production"
     end
 
     #
-    # The configure block allows to configure Rocket internals.
+    # The configure block allows to configure Ductr internals.
     # You must calls this method one and only one time to use the framework.
     #
     # @return [void]
@@ -86,7 +86,7 @@ module Rocket
     end
 
     #
-    # The Rocket main logger instance.
+    # The Ductr main logger instance.
     #
     # @return [Log::Logger] The logger instance
     #
@@ -95,7 +95,7 @@ module Rocket
     end
 
     #
-    # The Rocket store, used to share information across different instances.
+    # The Ductr store, used to share information across different instances.
     #
     # @return [ActiveSupport::Cache::Store] The store instance
     #
@@ -117,15 +117,15 @@ Zeitwerk::Loader.for_gem.tap do |loader|
   loader.inflector.inflect "cli" => "CLI"
   loader.inflector.inflect "etl" => "ETL"
 
-  loader.collapse "#{__dir__}/rocket/etl/controls"
-  loader.collapse "#{__dir__}/rocket/log/outputs"
-  loader.collapse "#{__dir__}/rocket/log/formatters"
+  loader.collapse "#{__dir__}/ductr/etl/controls"
+  loader.collapse "#{__dir__}/ductr/log/outputs"
+  loader.collapse "#{__dir__}/ductr/log/formatters"
 
-  loader.ignore "#{__dir__}/rocket/cli/templates"
+  loader.ignore "#{__dir__}/ductr/cli/templates"
 
   loader.setup
   loader.eager_load # TODO: use #eager_load_namespace when released
-  # loader.eager_load_namespace(Rocket::RufusTrigger)
+  # loader.eager_load_namespace(Ductr::RufusTrigger)
 end
 
 #
