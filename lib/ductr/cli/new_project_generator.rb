@@ -45,6 +45,7 @@ module Ductr
 
         create_file "app/jobs/.gitkeep"
         create_file "app/pipelines/.gitkeep"
+        create_file "app/schedulers/.gitkeep"
       end
 
       #

@@ -82,7 +82,7 @@ module Ductr
       Ractor.make_shareable @config
       Ractor.make_shareable @adapter_registry
       Ractor.make_shareable @config.logging.outputs
-      @adapter_registry.values.each(&:make_shareable)
+      adapter_registry.values.each(&:make_shareable)
     end
 
     #
@@ -124,8 +124,7 @@ Zeitwerk::Loader.for_gem.tap do |loader|
   loader.ignore "#{__dir__}/ductr/cli/templates"
 
   loader.setup
-  loader.eager_load # TODO: use #eager_load_namespace when released
-  # loader.eager_load_namespace(Ductr::RufusTrigger)
+  loader.eager_load_namespace(Ductr::RufusTrigger)
 end
 
 #

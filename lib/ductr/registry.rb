@@ -34,7 +34,7 @@ module Ductr
     #
     # @return [void]
     #
-    def add(item, as:) # rubocop:disable Naming/MethodParameterName
+    def add(item, as:)
       @items[as.to_sym] = item
     end
 
