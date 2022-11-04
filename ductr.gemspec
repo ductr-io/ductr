@@ -15,9 +15,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.1.0"
   # TODO: Change gem server URL for a real one
   spec.metadata["allowed_push_host"] = "https://example.com"
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["rubygems_mfa_required"] = "true"
   # TODO: Change gem's public repo URL for a real one
   spec.metadata["source_code_uri"] = "https://git.example.com/ductr"
   # TODO: Change gem's changelog URL for a real one

@@ -1,5 +1,5 @@
 GIT
-  remote: git@gitlab.com:la-manufacture/rocket/annotable.git
+  remote: git@gitlab.com:la-manufacture/annotable.git
   revision: 5e75a14604041f57beac2fa96c76e2f03da592dc
   branch: master
   specs:
