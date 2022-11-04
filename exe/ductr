@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+
+EXEC_PATH = "bin/ductr"
+CURRENT_DIR = Dir.pwd.freeze
+
+loop do
+  if File.file?(EXEC_PATH)
+    exec Gem.ruby, EXEC_PATH, *ARGV
+    break
+  end
+
+  if Pathname.new(Dir.pwd).root?
+    Dir.chdir(CURRENT_DIR)
+    break
+  end
+
+  Dir.chdir("..")
+end
+
+require_relative "../lib/ductr"
+Ductr::CLI::Default.start
