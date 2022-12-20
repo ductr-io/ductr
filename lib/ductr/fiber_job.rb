@@ -2,37 +2,42 @@
 
 module Ductr
   #
-  # Base class for ETL job using kiba's streaming runner.
-  # Example using the SQLite adapter:
+  # Base class for ETL job using the experimental fiber runner.
+  # Usage example:
   #
-  #   class MyKibaJob < Ductr::KibaJob
-  #     source :some_adapter, :paginated, page_size: 4
-  #     def select_some_stuff(db, offset, limit)
-  #       db[:items].offset(offset).limit(limit)
-  #     end
-  #
-  #     lookup :some_adapter, :match, merge: [:id, :item], buffer_size: 4
-  #     def merge_with_stuff(db, ids)
-  #       db[:items_bis].select(:id, Sequel.as(:name, :name_bis), :item).where(item: ids)
+  #   class MyFiberJob < Ductr::FiberJob
+  #     source :first_db, :basic
+  #     send_to :the_transform, :the_other_transform
+  #     def the_source(db)
+  #       # ...
   #     end
   #
   #     transform
-  #     def generate_more_stuff(row)
-  #       { name: "#{row[:name]}_#{row[:name_bis]}" }
+  #     send_to :the_destination
+  #     def the_transform(row)
+  #       # ...
   #     end
   #
-  #     destination :some_other_adapter, :basic
-  #     def my_destination(row, db)
-  #       logger.trace("Hello destination: #{row}")
-  #       db[:new_items].insert(name: row[:name])
+  #     destination :first_db, :basic
+  #     def the_destination(row, db)
+  #       # ...
+  #     end
+  #
+  #     transform
+  #     send_to :the_other_destination
+  #     def the_other_transform(row)
+  #       # ...
+  #     end
+  #
+  #     destination :second_db, :basic
+  #     def the_other_destination(row, db)
+  #       # ...
   #     end
   #   end
   #
-  # @see The chosen adapter documentation for further information on controls usage.
-  #
-  class KibaJob < Job
+  class FiberJob < Job
     # @return [Class] The ETL runner class used by the job
-    ETL_RUNNER_CLASS = ETL::KibaRunner
+    ETL_RUNNER_CLASS = ETL::FiberRunner
     include JobETL
 
     include ETL::Parser
@@ -126,5 +131,31 @@ module Ductr
     #   @return [void]
     #
     annotable :destination
+
+    #
+    # @!method self.send_to(*methods)
+    #   Annotation to define which methods will follow the current one
+    #   @param *methods [Array<Symbol>] The names of the following methods
+    #
+    #   @example Source with Sequel SQLite adapter sending rows to two transforms
+    #     source :my_adapter, :paginated, page_size: 42
+    #     send_to :my_first_transform, :my_second_transform
+    #     def my_source(db, offset, limit)
+    #       db[:items].offset(offset).limit(limit)
+    #     end
+    #
+    #     transform
+    #     def my_first_transform(row)
+    #       # ...
+    #     end
+    #
+    #     transform
+    #     def my_second_transform(row)
+    #       # ...
+    #     end
+    #
+    #   @return [void]
+    #
+    annotable :send_to
   end
 end

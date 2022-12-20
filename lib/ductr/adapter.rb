@@ -41,17 +41,6 @@ module Ductr
       def trigger_registry
         @trigger_registry ||= Registry.new(:trigger)
       end
-
-      #
-      # Make the registries ractor shareable, which freezes them.
-      #
-      # @return [void]
-      #
-      def make_shareable
-        Ractor.make_shareable @source_registry
-        Ractor.make_shareable @lookup_registry
-        Ractor.make_shareable @destination_registry
-      end
     end
 
     # @return [Symbol] the adapter instance name

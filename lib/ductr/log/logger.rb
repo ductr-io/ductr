@@ -65,12 +65,14 @@ module Ductr
       #
       # Create configured outputs instances, meaning that you can't add outputs in an already instantiated logger.
       #
-      def initialize
+      def initialize(prog_name = nil)
+        @prog_name = prog_name
+
         @outputs = self.class.outputs.map do |output_with_params|
           out, params = *output_with_params
           formatter, options = *params
 
-          out.new(formatter, **options)
+          out.new(formatter, **options || {})
         end
       end
 
@@ -78,55 +80,65 @@ module Ductr
       # Logs a message with the `debug` level.
       #
       # @param [String] message The message to log
+      # @param [String, Symbol] prog_name The program name of the message
       #
       # @return [void]
+      # @yield The message
       #
-      def debug(message)
-        write(::Logger::DEBUG, message)
+      def debug(...)
+        write(::Logger::DEBUG, ...)
       end
 
       #
       # Logs a message with the `info` level.
       #
       # @param [String] message The message to log
+      # @param [String, Symbol] prog_name The program name of the message
       #
       # @return [void]
+      # @yield The message
       #
-      def info(message)
-        write(::Logger::INFO, message)
+      def info(...)
+        write(::Logger::INFO, ...)
       end
 
       #
       # Logs a message with the `warn` level.
       #
       # @param [String] message The message to log
+      # @param [String, Symbol] prog_name The program name of the message
       #
       # @return [void]
+      # @yield The message
       #
-      def warn(message)
-        write(::Logger::WARN, message)
+      def warn(...)
+        write(::Logger::WARN, ...)
       end
 
       #
       # Logs a message with the `error` level.
       #
       # @param [String] message The message to log
+      # @param [String, Symbol] prog_name The program name of the message
       #
       # @return [void]
+      # @yield The message
       #
-      def error(message)
-        write(::Logger::ERROR, message)
+      def error(...)
+        write(::Logger::ERROR, ...)
       end
 
       #
       # Logs a message with the `fatal` level.
       #
       # @param [String] message The message to log
+      # @param [String, Symbol] prog_name The program name of the message
       #
       # @return [void]
+      # @yield The message
       #
-      def fatal(message)
-        write(::Logger::FATAL, message)
+      def fatal(...)
+        write(::Logger::FATAL, ...)
       end
 
       private
@@ -136,13 +148,17 @@ module Ductr
       #
       # @param [Integer] severity The severity level of the message
       # @param [String] message The message to write
+      # @param [String] prog_name The program name of the message
       #
       # @return [void]
       #
-      def write(severity, message)
+      def write(severity, message = nil, prog_name = nil, &)
         return if severity < self.class.level
 
-        prog_name = caller_locations(2, 1).first.label
+        message ||= yield
+
+        called_method = "#{@prog_name}##{caller_locations(2, 1).first.label}"
+        prog_name ||= @prog_name.is_a?(Class) ? called_method : @prog_name
 
         @outputs.each do |output|
           output.write severity, prog_name, message
