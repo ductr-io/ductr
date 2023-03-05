@@ -9,25 +9,26 @@ module Ductr
   # it is called when the scheduler relying on the trigger is stopped.
   #
   class Trigger
+    attr_reader :adapter
+
     #
     # Creates a new trigger instance, called by the scheduler.
     #
-    # @param [Symbol] adapter_name The trigger's adapter name, if any
+    # @param [Adapter, Nil] adapter The trigger's adapter, if any
     #
-    def initialize(adapter_name = nil)
-      @adapter_name = adapter_name
+    def initialize(adapter = nil)
+      @adapter = adapter
     end
 
     #
     # Adds a new trigger, called by a scheduler when a trigger is declared.
     #
-    # @param [Scheduler] _scheduler The scheduler instance where the trigger has been invoked
-    # @param [Symbol] _method_name The scheduler method to be called by the trigger
+    # @param [Method] _method The scheduler method to be called by the trigger
     # @param [Hash<Symbol: Object>] _options options The options of the trigger declaration
     #
     # @return [void]
     #
-    def add(_scheduler, _method_name, _options)
+    def add(_method, _options)
       raise NotImplementedError, "A trigger must implement the #add method"
     end
 

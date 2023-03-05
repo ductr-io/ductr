@@ -7,12 +7,12 @@ module Ductr
   #
   #   class CustomJobClass < Job
   #     ETL_RUNNER_CLASS = ETL::KibaRunner
-  #     include JobETL
+  #     include JobETLRunner
   #   end
   #
   # The job must have the #parse_annotations method defined, which can be added by including ETL::Parser.
   #
-  module JobETL
+  module JobETLRunner
     #
     # Parse job's annotations and create the runner instance.
     #

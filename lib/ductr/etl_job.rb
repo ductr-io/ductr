@@ -5,7 +5,7 @@ module Ductr
   # Base class for ETL job using the experimental fiber runner.
   # Usage example:
   #
-  #   class MyFiberJob < Ductr::FiberJob
+  #   class MyETLJob < Ductr::ETLJob
   #     source :first_db, :basic
   #     send_to :the_transform, :the_other_transform
   #     def the_source(db)
@@ -35,10 +35,10 @@ module Ductr
   #     end
   #   end
   #
-  class FiberJob < Job
+  class ETLJob < Job
     # @return [Class] The ETL runner class used by the job
     ETL_RUNNER_CLASS = ETL::FiberRunner
-    include JobETL
+    include JobETLRunner
 
     include ETL::Parser
 

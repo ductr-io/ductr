@@ -70,8 +70,9 @@ module Ductr
       self.class.annotated_methods.each do |method|
         annotation = method.find_annotation(:trigger)
         trigger = find_trigger(*annotation.params.reverse)
+        callable = self.method(method.name)
 
-        trigger.add(self, method.name, annotation.options)
+        trigger.add(callable, annotation.options)
       end
     end
 
@@ -88,10 +89,11 @@ module Ductr
     def find_trigger(trigger_type, adapter_name = nil)
       return find_or_create_trigger(Ductr.trigger_registry, trigger_type) unless adapter_name
 
-      trigger_registry = Ductr.config.adapter(adapter_name).class.trigger_registry
+      adapter = Ductr.config.adapter(adapter_name)
+      trigger_registry = adapter.class.trigger_registry
       registry_key = "#{adapter_name}_#{trigger_type}".to_sym
 
-      find_or_create_trigger(trigger_registry, registry_key, trigger_type, adapter_name)
+      find_or_create_trigger(trigger_registry, registry_key, trigger_type, adapter)
     end
 
     #
@@ -101,15 +103,15 @@ module Ductr
     # @param [Registry] trigger_registry The registry containing the required trigger class
     # @param [Symbol] registry_key The key in which to store the trigger instance inside the singleton hash
     # @param [Symbol] trigger_type The registry's key in which to find the trigger class
-    # @param [Symbol] adapter_name The adapter name to pass to the trigger
+    # @param [Adapter, Nil] adapter The adapter to pass to the trigger
     #
     # @return [Trigger] The found or created trigger
     #
-    def find_or_create_trigger(trigger_registry, registry_key, trigger_type = registry_key, adapter_name = nil)
+    def find_or_create_trigger(trigger_registry, registry_key, trigger_type = registry_key, adapter = nil)
       trigger = Scheduler.triggers[registry_key]
       return trigger if trigger
 
-      Scheduler.triggers[registry_key] = trigger_registry.find(trigger_type).new(adapter_name)
+      Scheduler.triggers[registry_key] = trigger_registry.find(trigger_type).new(adapter)
     end
   end
 end

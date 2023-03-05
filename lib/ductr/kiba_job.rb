@@ -33,7 +33,7 @@ module Ductr
   class KibaJob < Job
     # @return [Class] The ETL runner class used by the job
     ETL_RUNNER_CLASS = ETL::KibaRunner
-    include JobETL
+    include JobETLRunner
 
     include ETL::Parser
 

@@ -114,7 +114,8 @@ end
 Zeitwerk::Loader.for_gem.tap do |loader|
   loader.inflector.inflect "cli" => "CLI"
   loader.inflector.inflect "etl" => "ETL"
-  loader.inflector.inflect "job_etl" => "JobETL"
+  loader.inflector.inflect "etl_job" => "ETLJob"
+  loader.inflector.inflect "job_etl_runner" => "JobETLRunner"
 
   loader.collapse "#{__dir__}/ductr/etl/controls"
   loader.collapse "#{__dir__}/ductr/log/outputs"
