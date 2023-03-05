@@ -70,19 +70,17 @@ module Ductr
     # The configure block allows to configure Ductr internals.
     # You must calls this method one and only one time to use the framework.
     #
+    # @raise [ScriptError] Raises when called more than one time
     # @return [void]
     # @yield [config] Configure the framework
     # @yieldparam [Configuration] config The configuration instance
     #
     def configure
+      raise ScriptError, "Ductr::configure must be called only once" if @config
+
       @config = Configuration.new(env)
       yield(@config)
       @config.apply_active_job_config
-
-      Ractor.make_shareable @config
-      Ractor.make_shareable @adapter_registry
-      Ractor.make_shareable @config.logging.outputs
-      adapter_registry.values.each(&:make_shareable)
     end
 
     #
@@ -116,6 +114,8 @@ end
 Zeitwerk::Loader.for_gem.tap do |loader|
   loader.inflector.inflect "cli" => "CLI"
   loader.inflector.inflect "etl" => "ETL"
+  loader.inflector.inflect "etl_job" => "ETLJob"
+  loader.inflector.inflect "job_etl_runner" => "JobETLRunner"
 
   loader.collapse "#{__dir__}/ductr/etl/controls"
   loader.collapse "#{__dir__}/ductr/log/outputs"
@@ -130,13 +130,13 @@ end
 #
 # Application auto loading
 #
-if File.directory?("#{Dir.pwd}/app")
+if File.directory?("#{pwd = Dir.pwd}/app")
   Zeitwerk::Loader.new.tap do |loader|
-    loader.push_dir "#{Dir.pwd}/app"
+    loader.push_dir "#{pwd}/app"
 
-    loader.collapse "#{Dir.pwd}/app/jobs"
-    loader.collapse "#{Dir.pwd}/app/pipelines"
-    loader.collapse "#{Dir.pwd}/app/schedulers"
+    loader.collapse "#{pwd}/app/jobs"
+    loader.collapse "#{pwd}/app/pipelines"
+    loader.collapse "#{pwd}/app/schedulers"
 
     loader.setup
   end

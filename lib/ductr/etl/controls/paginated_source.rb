@@ -23,7 +23,6 @@ module Ductr
       # @return [void]
       #
       def each(&)
-        adapter.open!
         @offset ||= 0
 
         loop do
@@ -31,8 +30,6 @@ module Ductr
 
           @offset += page_size
         end
-
-        adapter.close!
       end
 
       #

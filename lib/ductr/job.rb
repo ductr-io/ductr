@@ -43,7 +43,7 @@ module Ductr
     # @return [Ductr::Log::Logger] The logger instance
     #
     def logger
-      Ductr.config.logging.new
+      @logger ||= Ductr.config.logging.new(self.class)
     end
 
     #

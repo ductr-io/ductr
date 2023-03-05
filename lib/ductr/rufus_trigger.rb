@@ -45,16 +45,14 @@ module Ductr
     #
     # Adds a new trigger into rufus-scheduler.
     #
-    # @param [Scheduler] scheduler The scheduler instance where the rufus trigger has been invoked
-    # @param [Symbol] method_name The scheduler method to be called by rufus-scheduler
+    # @param [Symbol] method The scheduler method to be called by rufus-scheduler
     # @param [Hash<Symbol: String>] options The options to configure rufus-scheduler
     #
     # @return [void]
     #
-    def add(scheduler, method_name, options)
+    def add(method, options)
       rufus_type = options.keys.first
       rufus_value = options.values.first
-      method = callable(scheduler, method_name, **options)
 
       do_schedule(rufus_type, rufus_value, method)
     end

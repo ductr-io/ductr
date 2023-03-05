@@ -42,7 +42,6 @@ module Ductr
 
       @logging = Log::Logger
       logging.level = :debug
-      logging.add_output(Log::StandardOutput, Log::ColorFormatter)
 
       @active_job = Struct.new(:queue_adapter, :default_queue_name, :queue_name_prefix, :queue_name_delimiter).new
       @store_adapter = ActiveSupport::Cache::FileStore
@@ -68,7 +67,7 @@ module Ductr
     # @return [Array<Adapter>] The configured Adapter instances
     #
     def adapters
-      yml.adapters.to_h.map do |name, entry|
+      @adapters ||= yml.adapters.to_h.map do |name, entry|
         adapter_class = Ductr.adapter_registry.find(entry.adapter)
         config = entry.to_h.except(:adapter)
 
@@ -98,10 +97,7 @@ module Ductr
     # @return [void]
     #
     def apply_active_job_config
-      # TODO: Find a way to pass a logger instance to ActiveJob without messing with ractor.
-      #       See https://gitlab.com/la-manufacture/ductr/ductr/-/issues/9 to track this one.
-
-      # ActiveJob::Base.logger = logging.new
+      ActiveJob::Base.logger = logging.new("ActiveJob")
 
       active_job.each_pair do |opt, value|
         next unless value

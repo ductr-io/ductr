@@ -22,9 +22,7 @@ module Ductr
       #
       # @return [void]
       #
-      def close
-        adapter&.close!
-      end
+      def close; end
     end
   end
 end
