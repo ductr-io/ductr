@@ -1,15 +1,13 @@
 # Ductr
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ductr`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Ductr is a data pipeline and ETL framework built with efficiency, simplicity and testability in mind.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ductr'
+gem "ductr"
 ```
 
 And then execute:
@@ -32,4 +30,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ductr.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ductr-io/ductr.
+
+## License
+
+The gem is available as open source under the terms of the [LGPLv3 or later](https://opensource.org/license/lgpl-3-0/).
