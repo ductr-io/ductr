@@ -41,7 +41,6 @@ module Ductr
       def gen_root
         copy_file "gemfile.rb", "Gemfile"
         copy_file "rubocop.yml", ".rubocop.yml"
-        copy_file "tool-versions", ".tool-versions"
 
         create_file "app/jobs/.gitkeep"
         create_file "app/pipelines/.gitkeep"
