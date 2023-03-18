@@ -27,6 +27,8 @@ module Ductr
 
       desc "schedule, s [SCHEDULERS]", "Run the given schedulers"
       def schedule(*scheduler_names)
+        raise ArgumentError, "You must pass at least one scheduler name" if scheduler_names.empty?
+
         scheduler_names.each { |name| name.camelize.constantize.new }
         Scheduler.start
 
