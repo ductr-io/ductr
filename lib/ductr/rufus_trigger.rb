@@ -53,8 +53,9 @@ module Ductr
     def add(method, options)
       rufus_type = options.keys.first
       rufus_value = options.values.first
+      handler = callable(method, **options)
 
-      do_schedule(rufus_type, rufus_value, method)
+      do_schedule(rufus_type, rufus_value, handler)
     end
 
     #
@@ -78,16 +79,15 @@ module Ductr
     end
 
     #
-    # Returns a callable object based on given scheduler, method_name and options.
+    # Returns a callable object based on given method and options.
     #
-    # @param [Scheduler] scheduler The scheduler instance
-    # @param [Symbol] method_name The scheduler's method name
+    # @param [Method] method The scheduler's method
     # @param [Hash] ** The option passed to the trigger annotation
     #
     # @return [#call] A callable object
     #
-    def callable(scheduler, method_name, **)
-      scheduler.method(method_name)
+    def callable(method, **)
+      method
     end
 
     #
@@ -95,12 +95,12 @@ module Ductr
     #
     # @param [Symbol] rufus_type The rufus-scheduler type (`:once`, `:every`, `:interval` or `:cron`)
     # @param [String] rufus_value The rufus-scheduler value (e.g. `"10min"`)
-    # @param [#call] method The callable object (the scheduler's method in this case)
+    # @param [#call] handler The callable object (the scheduler's method in this case)
     #
     # @return [void]
     #
-    def do_schedule(rufus_type, rufus_value, method)
-      rufus.send(:do_schedule, rufus_type, rufus_value, nil, {}, false, method)
+    def do_schedule(rufus_type, rufus_value, handler)
+      rufus.send(:do_schedule, rufus_type, rufus_value, nil, {}, false, handler)
     end
   end
 end
