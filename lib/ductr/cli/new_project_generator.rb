@@ -42,6 +42,8 @@ module Ductr
         copy_file "gemfile.rb", "Gemfile"
         copy_file "rubocop.yml", ".rubocop.yml"
 
+        create_file "config/initializers/.gitkeep"
+        create_file "lib/.gitkeep"
         create_file "app/jobs/.gitkeep"
         create_file "app/pipelines/.gitkeep"
         create_file "app/schedulers/.gitkeep"
