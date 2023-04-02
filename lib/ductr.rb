@@ -133,10 +133,10 @@ end
 if File.directory?("#{pwd = Dir.pwd}/app")
   Zeitwerk::Loader.new.tap do |loader|
     loader.push_dir "#{pwd}/app"
+    loader.push_dir "#{pwd}/lib"
 
-    loader.collapse "#{pwd}/app/jobs"
-    loader.collapse "#{pwd}/app/pipelines"
-    loader.collapse "#{pwd}/app/schedulers"
+    app_paths = Dir.glob("#{pwd}/app/**/**").select { |f| File.directory? f }
+    loader.collapse(app_paths)
 
     loader.setup
   end
