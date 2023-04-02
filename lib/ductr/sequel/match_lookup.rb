@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module SQLite
+  module Sequel
     #
     # A lookup control that execute the query for a bunch of rows and merge them with the buffer's rows.
     #
