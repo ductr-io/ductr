@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module Sequel
+  module SequelBase
     #
     # A trigger based on the RufusTrigger, runs the PollingHandler at the given timing.
     #

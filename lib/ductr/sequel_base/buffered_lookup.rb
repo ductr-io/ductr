@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module Sequel
+  module SequelBase
     #
     # A lookup control that execute the query for a bunch of rows.
     #

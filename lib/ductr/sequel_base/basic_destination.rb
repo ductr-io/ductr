@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module Sequel
+  module SequelBase
     #
     # A destination control that write rows one by one.
     #

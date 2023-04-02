@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module Sequel
+  module SequelBase
     #
     # The base class of all sequel-based adapters.
     #

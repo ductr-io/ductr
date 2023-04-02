@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ductr
-  module Sequel
+  module SequelBase
     #
     # The rufus-scheduler handler class.
     # @see https://github.com/jmettraux/rufus-scheduler#scheduling-handler-instances
