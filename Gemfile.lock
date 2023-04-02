@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ductr (0.2.1)
+    ductr (0.2.2)
       activejob (~> 7.0)
       annotable (~> 0.1)
       colorize (~> 0.8)

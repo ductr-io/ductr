@@ -2,5 +2,5 @@
 
 module Ductr
   # @return [String] The ductr's version number
-  VERSION = "0.2.1"
+  VERSION = "0.2.2"
 end
