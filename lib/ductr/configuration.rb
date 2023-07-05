@@ -26,8 +26,11 @@ module Ductr
     #   @see https://edgeapi.rubyonrails.org/classes/ActiveSupport/Cache.html#method-c-lookup_store
     attr_reader :store_adapter
 
-    # @return [Array] The store adapter config
+    # @return [Array] The store adapter config args
     attr_reader :store_parameters
+
+    # @return [Hash<Symbol, Object>] The store adapter config options
+    attr_reader :store_options
 
     # @return [Hash] The parsed YML configuration
     attr_reader :yml
@@ -56,9 +59,10 @@ module Ductr
     #
     # @return [void]
     #
-    def store(adapter, *parameters)
+    def store(adapter, *parameters, **options)
       @store_adapter = adapter
       @store_parameters = parameters
+      @store_options = options
     end
 
     #

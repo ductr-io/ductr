@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ductr (0.2.2)
+    ductr (0.2.3)
       activejob (~> 7.0)
       annotable (~> 0.1)
       colorize (~> 0.8)
@@ -118,4 +118,4 @@ DEPENDENCIES
   yard (~> 0.9)
 
 BUNDLED WITH
-   2.4.8
+   2.4.15

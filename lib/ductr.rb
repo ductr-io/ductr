@@ -98,11 +98,15 @@ module Ductr
     # @return [ActiveSupport::Cache::Store] The store instance
     #
     def store
+      adapter = config.store_adapter
+      params = config.store_parameters
+      options = config.store_options
+
       @store ||= \
-        if config.store_adapter.is_a? Class
-          config.store_adapter.new(*config.store_parameters)
+        if adapter.is_a? Class
+          adapter.new(*params, **options)
         else
-          ActiveSupport::Cache.lookup_store(config.store_adapter, *config.store_parameters)
+          ActiveSupport::Cache.lookup_store(adapter, *params, **options)
         end
     end
   end
