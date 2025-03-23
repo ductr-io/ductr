@@ -37,10 +37,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 1.21"
+  spec.add_development_dependency "ruby-lsp", "~> 0.13"
   spec.add_development_dependency "sord", "~> 4.0"
   spec.add_development_dependency "yard", "~> 0.9"
 
-  spec.add_dependency "activejob", "~> 7.0"
+  spec.add_dependency "activejob", "~> 8.0"
   spec.add_dependency "annotable", "~> 0.1"
   spec.add_dependency "colorize", "~> 0.8"
   spec.add_dependency "kiba", "~> 4.0"

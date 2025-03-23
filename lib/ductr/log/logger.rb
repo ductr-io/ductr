@@ -90,6 +90,15 @@ module Ductr
       end
 
       #
+      # Returns true if the log level allows entries with severity Logger::DEBUG to be written, false otherwise.
+      #
+      # @return [Boolean]
+      #
+      def debug?
+        self.class.level <= ::Logger::DEBUG
+      end
+
+      #
       # Logs a message with the `info` level.
       #
       # @param [String] message The message to log
@@ -100,6 +109,15 @@ module Ductr
       #
       def info(...)
         write(::Logger::INFO, ...)
+      end
+
+      #
+      # Returns true if the log level allows entries with severity Logger::INFO to be written, false otherwise.
+      #
+      # @return [Boolean]
+      #
+      def info?
+        self.class.level <= ::Logger::INFO
       end
 
       #
@@ -116,6 +134,15 @@ module Ductr
       end
 
       #
+      # Returns true if the log level allows entries with severity Logger::WARN to be written, false otherwise.
+      #
+      # @return [Boolean]
+      #
+      def warn?
+        self.class.level <= ::Logger::WARN
+      end
+
+      #
       # Logs a message with the `error` level.
       #
       # @param [String] message The message to log
@@ -129,6 +156,15 @@ module Ductr
       end
 
       #
+      # Returns true if the log level allows entries with severity Logger::ERROR to be written, false otherwise.
+      #
+      # @return [Boolean]
+      #
+      def error?
+        self.class.level <= ::Logger::ERROR
+      end
+
+      #
       # Logs a message with the `fatal` level.
       #
       # @param [String] message The message to log
@@ -139,6 +175,15 @@ module Ductr
       #
       def fatal(...)
         write(::Logger::FATAL, ...)
+      end
+
+      #
+      # Returns true if the log level allows entries with severity Logger::FATAL to be written, false otherwise.
+      #
+      # @return [Boolean]
+      #
+      def fatal?
+        self.class.level <= ::Logger::FATAL
       end
 
       private
